@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "X Reply Like Sort",
+  "description": "Automatically opens tweet replies sorted by likes.",
+  "version": "1.0.0",
+  "permissions": [
+    "declarativeNetRequest",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.x.com/*",
+    "https://www.twitter.com/*",
+    "https://x.com/*",
+    "https://twitter.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.x.com/*",
+        "https://www.twitter.com/*",
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": ["page.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.x.com/*",
+        "https://www.twitter.com/*",
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "X Reply Like Sort",
+    "default_popup": "popup.html"
+  }
+}
