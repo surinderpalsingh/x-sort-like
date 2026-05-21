@@ -1,6 +1,7 @@
 const SORT_PARAM = "sort_replies";
 const SORT_VALUE = "likes";
-const STATUS_PATH_PATTERN = /^\/[^/?#]+\/status\/\d+/;
+const STATUS_PATH_PATTERN = /^\/[^/?#]+\/status\/\d+\/?$/;
+const STATUS_CONTEXT_PATH_PATTERN = /^\/[^/?#]+\/status\/\d+(?:\/(?:photo|video)\/\d+)?\/?$/;
 const AUTOMATION_CLASS = "x-like-sort-automation";
 const AUTOMATION_STYLE_ID = "x-like-sort-automation-style";
 
@@ -144,7 +145,7 @@ function observeDocument() {
 }
 
 function scheduleReplySortCheck(delay = 80) {
-  if (!enabled || !isTweetUrl(new URL(window.location.href))) return;
+  if (!enabled || !isTweetContextUrl(new URL(window.location.href))) return;
   if (activeSortAttemptUrl === window.location.href && activeSortAttemptCount >= 12) return;
 
   clearTimeout(sortCheckTimer);
@@ -152,7 +153,7 @@ function scheduleReplySortCheck(delay = 80) {
 }
 
 function ensureRepliesSortedByLikes() {
-  if (!enabled || !isTweetUrl(new URL(window.location.href))) return;
+  if (!enabled || !isTweetContextUrl(new URL(window.location.href))) return;
 
   if (activeSortAttemptUrl !== window.location.href) {
     activeSortAttemptUrl = window.location.href;
@@ -315,6 +316,11 @@ function getUnsortedTweetUrl(href) {
 function isTweetUrl(url) {
   const host = url.hostname.replace(/^www\./, "");
   return (host === "x.com" || host === "twitter.com") && STATUS_PATH_PATTERN.test(url.pathname);
+}
+
+function isTweetContextUrl(url) {
+  const host = url.hostname.replace(/^www\./, "");
+  return (host === "x.com" || host === "twitter.com") && STATUS_CONTEXT_PATH_PATTERN.test(url.pathname);
 }
 
 function sendEnabledSetting() {

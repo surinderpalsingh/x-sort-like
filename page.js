@@ -1,7 +1,8 @@
 (() => {
   const SORT_PARAM = "sort_replies";
   const SORT_VALUE = "likes";
-  const STATUS_PATH_PATTERN = /^\/[^/?#]+\/status\/\d+/;
+  const STATUS_PATH_PATTERN = /^\/[^/?#]+\/status\/\d+\/?$/;
+  const STATUS_CONTEXT_PATH_PATTERN = /^\/[^/?#]+\/status\/\d+(?:\/(?:photo|video)\/\d+)?\/?$/;
   const MESSAGE_SOURCE = "x-like-sort-extension";
 
   let enabled = true;
@@ -88,7 +89,7 @@
       return null;
     }
 
-    if (!isTweetUrl(url)) return null;
+    if (!isTweetContextUrl(url)) return null;
 
     url.searchParams.set(SORT_PARAM, SORT_VALUE);
     return url.toString();
@@ -177,5 +178,10 @@
   function isTweetUrl(url) {
     const host = url.hostname.replace(/^www\./, "");
     return (host === "x.com" || host === "twitter.com") && STATUS_PATH_PATTERN.test(url.pathname);
+  }
+
+  function isTweetContextUrl(url) {
+    const host = url.hostname.replace(/^www\./, "");
+    return (host === "x.com" || host === "twitter.com") && STATUS_CONTEXT_PATH_PATTERN.test(url.pathname);
   }
 })();
